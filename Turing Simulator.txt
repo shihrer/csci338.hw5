@@ -1,0 +1,33 @@
+; Machine starts in state 0.
+
+; State 0: Move head all the way right, verifying input is binary
+0 1 * r 0
+0 0 * r 0
+0 2 * * 3 ; 2 is not acceptable input.  Go to state 3
+0 _ * l 1 ; Reached end of input.  Move head back to last binary digit, go to state 1
+
+; State 1: Move head left.  Accept when it encounters a 0.
+1 0 1 * halt-accept ; if it's a 0, we're done
+1 1 0 l 2 ; Increment, go to next state
+
+; State 2: Start incrementing
+2 1 0 l 2 ; This carries the 1
+2 0 1 * halt-accept ; We're done here
+2 _ 1 * halt-accept ; Reached beginning of input, we're done
+
+; State 3: Rejected, let's change our input
+; Let's move back to start
+3 0 * l 3
+3 1 * l 3
+3 2 * l 3
+3 _ * r 4 ; Back to beginning, let's start changing input
+
+; Move to end of input, removing as we go
+4 0 _ r 4
+4 1 _ r 4
+4 2 _ r 4
+4 _ * l 5 ; End of input, Let's insert frowny
+
+; Draw frowny
+5 _ ( l 6
+6 _ : * halt-reject
